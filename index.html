@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>今天吃什么决定器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+:root{
+  --bg:#f5f7fa;
+  --card:#fff;
+  --text:#333;
+  --gray:#666;
+  --border:#eee;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#161616;
+    --card:#242424;
+    --text:#eaeaea;
+    --gray:#aaa;
+    --border:#333;
+  }
+}
+body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:0 auto}
+
+.header {
+  position: relative;
+  text-align: center;
+  margin: 10px 0 24px;
+}
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  display: inline-block;
+}
+.lang-select {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+}
+
+.random-btn{background:#FF7A00;color:#fff;font-size:18px;font-weight:bold;width:100%;padding:16px;border:none;border-radius:16px;margin-bottom:16px}
+.result{background:#FFF4E5;color:#FF5C00;padding:14px;border-radius:14px;text-align:center;font-size:17px;font-weight:bold;margin-bottom:16px}
+.result.hide{display:none}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px #00000008;margin-bottom:16px}
+.card h3{font-size:17px;margin-bottom:12px}
+input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;font-size:16px;background:var(--card);color:var(--text)}
+
+.custom-file-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+.custom-file-btn {
+  background: #eef2ff;
+  color: #4E6EF2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.custom-file-text {
+  font-size: 14px;
+  color: var(--gray);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* ------------------------------ */
+
+.add-btn{background:#4E6EF2;color:#fff;width:100%;padding:14px;border:none;border-radius:14px;font-size:16px}
+.tab{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tab button{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
+.tab button.active{background:#4E6EF2;color:#fff;border-color:#4E6EF2}
+.item{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:10px}
+.item img{width:70px;height:70px;object-fit:cover;border-radius:10px;margin-right:12px}
+.item-info{flex:1}
+.item-name{font-weight:bold;font-size:16px;margin-bottom:4px}
+.item-desc{font-size:13px;color:var(--gray)}
+.item-tag{font-size:12px;background:#f0f0f0;color:#555;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.btns{display:flex;gap:8px;margin-top:8px}
+.btns button{flex:1;padding:6px 0;border-radius:8px;border:none;font-size:14px}
+.btn-edit{background:#eef2ff;color:#4E6EF2}
+.btn-del{background:#ffebee;color:#f44336}
+.btn-eat{background:#e8f5e9;color:#2e7d32}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title" data-i18n="title">🍔 决定器</div>
+  <select class="lang-select" id="langSelect">
+    <option value="zh-CN">简体中文</option>
+    <option value="zh-TW">繁體中文</option>
+    <option value="en">English</option>
+    <option value="ja">日本語</option>
+  </select>
+</div>
+
+<button class="random-btn" id="randomBtn" data-i18n="randomBtn">帮我随机选一个！</button>
+<div class="result hide" id="result"></div>
+
+<div class="card">
+  <h3 id="formTitle" data-i18n="formTitleAdd">添加外卖</h3>
+  <input type="text" id="name" data-i18n="namePlaceholder" placeholder="店铺/菜品名称">
+  <textarea id="desc" rows="2" data-i18n="descPlaceholder" placeholder="评价或备注"></textarea>
+  <select id="cate">
+    <option value="staple" id="opt-staple">主食</option>
+    <option value="drink" id="opt-drink">奶茶</option>
+  </select>
+  
+  <div class="custom-file-container">
+    <input type="file" id="img" accept="image/*" style="display: none;">
+    <label for="img" class="custom-file-btn" data-i18n="chooseFileBtn">选择图片</label>
+    <span class="custom-file-text" id="customFileText" data-i18n="noFileText">未选择文件</span>
+  </div>
+  
+  <button class="add-btn" id="save" data-i18n="saveBtn">保存</button>
+</div>
+
+<div class="tab">
+  <button class="active" data-cate="all" data-i18n="tabAll">全部</button>
+  <button data-cate="staple" id="tab-staple">主食</button>
+  <button data-cate="drink" id="tab-drink">奶茶</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+const i18n = {
+  'zh-CN': {
+    title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
+    namePlaceholder: "店铺/菜品名称", descPlaceholder: "评价或备注", cateStaple: "主食", cateDrink: "奶茶",
+    saveBtn: "保存", tabAll: "全部", btnEdit: "编辑", btnDel: "删除", btnEat: "今天吃过",
+    chooseFileBtn: "选择图片", noFileText: "未选择文件",
+    confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃："
+  },
+  'zh-TW': {
+    title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
+    namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主食", cateDrink: "奶茶",
+    saveBtn: "保存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
+    chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
+    confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃："
+  },
+  'en': {
+    title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
+    namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Staple", cateDrink: "Drink",
+    saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
+    chooseFileBtn: "Choose Image", noFileText: "No file chosen",
+    confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: "
+  },
+  'ja': {
+    title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
+    namePlaceholder: "店名/料理名", descPlaceholder: "メモ・評価", cateStaple: "主食", cateDrink: "ドリンク",
+    saveBtn: "保存", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
+    chooseFileBtn: "画像を選択", noFileText: "選択されていません",
+    confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯："
+  }
+}
+
+const list = document.getElementById('list')
+const result = document.getElementById('result')
+const fileInput = document.getElementById('img')
+const customFileText = document.getElementById('customFileText')
+let foods = JSON.parse(localStorage.getItem('foods')) || []
+let eatenToday = JSON.parse(localStorage.getItem('eatenToday')) || []
+let currentCate = 'all'
+let editId = -1 
+let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
+
+foods.forEach(f => {
+  if (f.cate === '主食') f.cate = 'staple'
+  if (f.cate === '奶茶') f.cate = 'drink'
+})
+save()
+checkNewDay()
+initLanguage()
+
+function t(key) { return i18n[currentLang][key] || key }
+
+function initLanguage() {
+  document.getElementById('langSelect').value = currentLang;
+  updateLanguageUI();
+  
+  document.getElementById('langSelect').onchange = (e) => {
+    currentLang = e.target.value;
+    localStorage.setItem('app_lang', currentLang);
+    updateLanguageUI();
+  }
+}
+
+function updateLanguageUI() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n')
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = t(key)
+    } else {
+      el.innerText = t(key)
+    }
+  })
+  document.getElementById('opt-staple').innerText = t('cateStaple')
+  document.getElementById('opt-drink').innerText = t('cateDrink')
+  document.getElementById('tab-staple').innerText = t('cateStaple')
+  document.getElementById('tab-drink').innerText = t('cateDrink')
+  
+  if (editId !== -1) {
+    document.getElementById('formTitle').innerText = t('formTitleEdit')
+  }
+  render() 
+}
+
+function checkNewDay() {
+  const today = new Date().toDateString()
+  const lastDate = localStorage.getItem('lastDate')
+  if (lastDate !== today) {
+    eatenToday = [] 
+    localStorage.setItem('lastDate', today)
+    save()
+  }
+}
+
+function save(){
+  localStorage.setItem('foods', JSON.stringify(foods))
+  localStorage.setItem('eatenToday', JSON.stringify(eatenToday))
+}
+
+function clearForm() {
+  document.getElementById('name').value = ''
+  document.getElementById('desc').value = ''
+  fileInput.value = '' 
+  customFileText.innerText = t('noFileText')
+  customFileText.setAttribute('data-i18n', 'noFileText')
+  
+  document.getElementById('formTitle').innerText = t('formTitleAdd')
+  editId = -1
+}
+
+fileInput.addEventListener('change', function() {
+  if (this.files && this.files.length > 0) {
+    customFileText.innerText = this.files[0].name;
+    customFileText.removeAttribute('data-i18n'); 
+  } else {
+    customFileText.innerText = t('noFileText');
+    customFileText.setAttribute('data-i18n', 'noFileText');
+  }
+});
+
+function render(){
+  const filtered = foods.filter(f => !eatenToday.includes(f.id))
+  const show = currentCate === 'all' ? filtered : filtered.filter(f => f.cate === currentCate)
+
+  list.innerHTML = show.map(f => {
+    const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
+    return `
+    <div class="item">
+      <img src="${f.img}">
+      <div class="item-info">
+        <div class="item-name">${f.name}</div>
+        <div class="item-desc">${f.desc}</div>
+        <div class="item-tag">${displayCate}</div>
+        <div class="btns">
+          <button class="btn-edit" onclick="edit(${f.id})">${t('btnEdit')}</button>
+          <button class="btn-del" onclick="del(${f.id})">${t('btnDel')}</button>
+          <button class="btn-eat" onclick="eat(${f.id})">${t('btnEat')}</button>
+        </div>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function eat(id){
+  eatenToday.push(id); save(); render();
+}
+
+function del(id){
+  if(!confirm(t('confirmDel'))) return
+  foods = foods.filter(f => f.id !== id)
+  eatenToday = eatenToday.filter(eId => eId !== id)
+  save(); render();
+  if(editId === id) clearForm()
+}
+
+function edit(id){
+  const f = foods.find(x => x.id === id)
+  if(!f) return
+  document.getElementById('name').value = f.name
+  document.getElementById('desc').value = f.desc
+  document.getElementById('cate').value = f.cate
+  document.getElementById('formTitle').innerText = t('formTitleEdit')
+  editId = id 
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      const MAX_SIZE = 800;
+
+      if (width > height) {
+        if (width > MAX_SIZE) {
+          height *= MAX_SIZE / width;
+          width = MAX_SIZE;
+        }
+      } else {
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+      callback(compressedDataUrl);
+    }
+    img.src = e.target.result;
+  }
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('save').onclick = ()=>{
+  const name = document.getElementById('name').value.trim()
+  const desc = document.getElementById('desc').value.trim()
+  const cate = document.getElementById('cate').value
+  const file = fileInput.files[0]
+  
+  if(!name) return alert(t('alertName'))
+  
+  if(editId !== -1){ 
+    const f = foods.find(x => x.id === editId)
+    if(f) {
+      f.name = name; f.desc = desc; f.cate = cate;
+      if(file){
+        compressImage(file, (compressedImg) => {
+          f.img = compressedImg; 
+          save(); render(); clearForm();
+        });
+        return 
+      }
+    }
+    save(); render(); clearForm();
+  } else { 
+    if(!file) return alert(t('alertImg'))
+    compressImage(file, (compressedImg) => {
+      foods.push({ id: Date.now(), name, desc, cate, img: compressedImg })
+      save(); render(); clearForm();
+    });
+  }
+}
+
+document.getElementById('randomBtn').onclick = ()=>{
+  const pool = foods.filter(f => !eatenToday.includes(f.id))
+  if(pool.length === 0) {
+    result.classList.add('hide')
+    return alert(t('alertEaten'))
+  }
+  const pick = pool[Math.floor(Math.random()*pool.length)]
+  const displayCate = pick.cate === 'staple' ? t('cateStaple') : (pick.cate === 'drink' ? t('cateDrink') : pick.cate)
+  
+  result.classList.remove('hide')
+  result.innerText = t('eatResultPrefix') + pick.name + '（' + displayCate + '）'
+}
+
+document.querySelectorAll('.tab button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.tab button').forEach(x=>x.classList.remove('active'))
+    b.classList.add('active')
+    currentCate = b.dataset.cate
+    render()
+  }
+})
+</script>
+</body>
+</html>
