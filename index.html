@@ -48,7 +48,6 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
   outline: none;
 }
 
-/* 全局位置栏样式 */
 .location-bar {
   display: flex;
   justify-content: space-between;
@@ -73,9 +72,9 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
 
 input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;font-size:16px;background:var(--card);color:var(--text)}
 
-/* 两列并排的下拉框 */
-.form-row { display: flex; gap: 10px; }
-.form-row select { flex: 1; }
+/* 表单同行布局 */
+.form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.form-row select, .form-row input { flex: 1; margin-bottom: 0; }
 
 .custom-file-container {
   display: flex;
@@ -102,7 +101,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .item-desc{font-size:13px;color:var(--gray)}
 .item-tags{margin-top:4px; display:flex; gap:6px; flex-wrap:wrap;}
 .item-tag{font-size:12px;background:#f0f0f0;color:#555;padding:2px 6px;border-radius:4px;}
-.tag-loc{background:#e3f2fd; color:#1976d2;} /* 位置标签专属颜色 */
+.tag-loc{background:#e3f2fd; color:#1976d2;} 
 
 .btns{display:flex;gap:8px;margin-top:8px}
 .btns button{flex:1;padding:6px 0;border-radius:8px;border:none;font-size:14px;cursor:pointer;}
@@ -129,10 +128,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 <div class="location-bar">
   <span data-i18n="currentLocLabel">📍 当前位置</span>
   <select id="globalLoc">
-    <option value="all" id="opt-g-all">不限</option>
-    <option value="home" id="opt-g-home">家</option>
-    <option value="office" id="opt-g-office">公司</option>
-  </select>
+    </select>
 </div>
 
 <button class="random-btn" id="randomBtn" data-i18n="randomBtn">帮我随机选一个！</button>
@@ -148,11 +144,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
       <option value="staple" id="opt-staple">主食</option>
       <option value="drink" id="opt-drink">奶茶</option>
     </select>
-    <select id="foodLoc">
-      <option value="all" id="opt-f-all">不限位置</option>
-      <option value="home" id="opt-f-home">仅在家</option>
-      <option value="office" id="opt-f-office">仅在公司</option>
-    </select>
+    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="输入地点(留空则不限)">
   </div>
   
   <div class="custom-file-container">
@@ -182,7 +174,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
-// i18n 字典新增了位置相关的翻译
+// 更新了手动输入地点的文案翻译
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -191,7 +183,7 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locAll: "不限", locHome: "家", locOffice: "公司", locAllForm: "不限位置", locHomeForm: "仅在家", locOfficeForm: "仅在公司"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "输入地点(留空则不限)", locAll: "不限地点"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
@@ -200,7 +192,7 @@ const i18n = {
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
-    currentLocLabel: "📍 當前位置", locAll: "不限", locHome: "家", locOffice: "公司", locAllForm: "不限位置", locHomeForm: "僅在家", locOfficeForm: "僅在公司"
+    currentLocLabel: "📍 當前位置", locPlaceholder: "輸入地點(留空則不限)", locAll: "不限地點"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
@@ -208,8 +200,8 @@ const i18n = {
     saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
-    dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed. Please check the file.",
-    currentLocLabel: "📍 Location", locAll: "Anywhere", locHome: "Home", locOffice: "Office", locAllForm: "Anywhere", locHomeForm: "Home Only", locOfficeForm: "Office Only"
+    dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
+    currentLocLabel: "📍 Location", locPlaceholder: "Location (leave blank for anywhere)", locAll: "Anywhere"
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
@@ -217,8 +209,8 @@ const i18n = {
     saveBtn: "保存", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
-    dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。ファイルを確認してください。",
-    currentLocLabel: "📍 現在地", locAll: "すべて", locHome: "家", locOffice: "会社", locAllForm: "場所を問わない", locHomeForm: "家のみ", locOfficeForm: "会社のみ"
+    dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
+    currentLocLabel: "📍 現在地", locPlaceholder: "場所 (空白なら場所を問わない)", locAll: "すべて"
   }
 }
 
@@ -231,29 +223,50 @@ let eatenToday = JSON.parse(localStorage.getItem('eatenToday')) || []
 let currentCate = 'all'
 let editId = -1 
 let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
-let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all' // 记录当前的全局位置
+let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all'
 
-// 数据兼容处理：旧数据没有位置属性，默认设为 'all'
+// 数据兼容处理：把以前的'all'和旧版'home'/'office'转换为字符串
 foods.forEach(f => {
   if (f.cate === '主食') f.cate = 'staple'
   if (f.cate === '奶茶') f.cate = 'drink'
-  if (!f.location) f.location = 'all'
+  if (!f.location || f.location === 'all') f.location = ''
+  if (f.location === 'home') f.location = '家'
+  if (f.location === 'office') f.location = '公司'
 })
-save()
-checkNewDay()
-initLanguage()
-
-// 恢复上次选择的全局位置
-document.getElementById('globalLoc').value = currentGlobalLoc;
 
 // 监听全局位置切换
 document.getElementById('globalLoc').addEventListener('change', function(e) {
   currentGlobalLoc = e.target.value;
   localStorage.setItem('app_global_loc', currentGlobalLoc);
-  render(); // 切换位置后重新渲染列表
+  render();
 });
 
 function t(key) { return i18n[currentLang][key] || key }
+
+// 核心函数：根据录入的食物数据，自动生成全局下拉菜单
+function updateGlobalLocDropdown() {
+  const locSelect = document.getElementById('globalLoc');
+  // 获取所有不为空的独特地点
+  const uniqueLocs = [...new Set(foods.map(f => f.location).filter(l => l.trim() !== ''))];
+
+  // 生成下拉列表
+  locSelect.innerHTML = `<option value="all">${t('locAll')}</option>`;
+  uniqueLocs.forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = loc;
+    opt.innerText = loc;
+    locSelect.appendChild(opt);
+  });
+
+  // 如果上次选择的位置还在列表里，保留选择；否则重置为'all'
+  if (uniqueLocs.includes(currentGlobalLoc) || currentGlobalLoc === 'all') {
+    locSelect.value = currentGlobalLoc;
+  } else {
+    locSelect.value = 'all';
+    currentGlobalLoc = 'all';
+    localStorage.setItem('app_global_loc', 'all');
+  }
+}
 
 function initLanguage() {
   document.getElementById('langSelect').value = currentLang;
@@ -280,18 +293,12 @@ function updateLanguageUI() {
   document.getElementById('tab-staple').innerText = t('cateStaple')
   document.getElementById('tab-drink').innerText = t('cateDrink')
   
-  // 更新位置选项的翻译
-  document.getElementById('opt-g-all').innerText = t('locAll')
-  document.getElementById('opt-g-home').innerText = t('locHome')
-  document.getElementById('opt-g-office').innerText = t('locOffice')
-  document.getElementById('opt-f-all').innerText = t('locAllForm')
-  document.getElementById('opt-f-home').innerText = t('locHomeForm')
-  document.getElementById('opt-f-office').innerText = t('locOfficeForm')
-  
   if (editId !== -1) {
     document.getElementById('formTitle').innerText = t('formTitleEdit')
   }
-  render() 
+  
+  updateGlobalLocDropdown(); // 刷新下拉框文字
+  render();
 }
 
 function checkNewDay() {
@@ -307,12 +314,13 @@ function checkNewDay() {
 function save(){
   localStorage.setItem('foods', JSON.stringify(foods))
   localStorage.setItem('eatenToday', JSON.stringify(eatenToday))
+  updateGlobalLocDropdown(); // 每次保存食物数据时，更新位置下拉框
 }
 
 function clearForm() {
   document.getElementById('name').value = ''
   document.getElementById('desc').value = ''
-  document.getElementById('foodLoc').value = 'all' // 重置位置为不限
+  document.getElementById('foodLoc').value = '' // 清空地点输入
   fileInput.value = '' 
   customFileText.innerText = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
@@ -331,22 +339,20 @@ fileInput.addEventListener('change', function() {
 });
 
 function render(){
-  // 1. 过滤今天没吃过的
   const uneaten = foods.filter(f => !eatenToday.includes(f.id));
   
-  // 2. 根据全局位置过滤（只显示匹配当前位置，或者被标记为"不限位置"的食物）
+  // 过滤逻辑：如果没填地点，则任何全局位置都能看到它；否则只显示匹配当前地点的
   const locFiltered = currentGlobalLoc === 'all' 
     ? uneaten 
-    : uneaten.filter(f => f.location === currentGlobalLoc || f.location === 'all');
+    : uneaten.filter(f => !f.location || f.location === currentGlobalLoc);
     
-  // 3. 根据分类过滤（Tab）
   const show = currentCate === 'all' 
     ? locFiltered 
     : locFiltered.filter(f => f.cate === currentCate);
 
   list.innerHTML = show.map(f => {
     const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
-    const displayLoc = f.location === 'home' ? t('locHomeForm') : (f.location === 'office' ? t('locOfficeForm') : t('locAllForm'));
+    const displayLoc = f.location ? f.location : t('locAll');
     
     return `
     <div class="item">
@@ -368,9 +374,7 @@ function render(){
   }).join('')
 }
 
-function eat(id){
-  eatenToday.push(id); save(); render();
-}
+function eat(id){ eatenToday.push(id); save(); render(); }
 
 function del(id){
   if(!confirm(t('confirmDel'))) return
@@ -386,7 +390,7 @@ function edit(id){
   document.getElementById('name').value = f.name
   document.getElementById('desc').value = f.desc
   document.getElementById('cate').value = f.cate
-  document.getElementById('foodLoc').value = f.location || 'all' // 读取位置信息
+  document.getElementById('foodLoc').value = f.location || '' // 回显输入的地点
   document.getElementById('formTitle').innerText = t('formTitleEdit')
   editId = id 
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -401,24 +405,14 @@ function compressImage(file, callback) {
       let width = img.width;
       let height = img.height;
       const MAX_SIZE = 800;
-
       if (width > height) {
-        if (width > MAX_SIZE) {
-          height *= MAX_SIZE / width;
-          width = MAX_SIZE;
-        }
+        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
       } else {
-        if (height > MAX_SIZE) {
-          width *= MAX_SIZE / height;
-          height = MAX_SIZE;
-        }
+        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
       }
-
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width; canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-
       const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
       callback(compressedDataUrl);
     }
@@ -431,7 +425,7 @@ document.getElementById('save').onclick = ()=>{
   const name = document.getElementById('name').value.trim()
   const desc = document.getElementById('desc').value.trim()
   const cate = document.getElementById('cate').value
-  const foodLoc = document.getElementById('foodLoc').value // 获取保存的位置信息
+  const foodLoc = document.getElementById('foodLoc').value.trim() // 获取手填的地点
   const file = fileInput.files[0]
   
   if(!name) return alert(t('alertName'))
@@ -442,8 +436,7 @@ document.getElementById('save').onclick = ()=>{
       f.name = name; f.desc = desc; f.cate = cate; f.location = foodLoc;
       if(file){
         compressImage(file, (compressedImg) => {
-          f.img = compressedImg; 
-          save(); render(); clearForm();
+          f.img = compressedImg; save(); render(); clearForm();
         });
         return 
       }
@@ -459,10 +452,10 @@ document.getElementById('save').onclick = ()=>{
 }
 
 document.getElementById('randomBtn').onclick = ()=>{
-  // 随机池逻辑：今天没吃过的 + 匹配当前全局位置（或者不限位置的）
   const pool = foods.filter(f => {
     const notEaten = !eatenToday.includes(f.id);
-    const matchLoc = currentGlobalLoc === 'all' || f.location === currentGlobalLoc || f.location === 'all';
+    // 不限地点的外卖（空字符串），在任何全局位置都能被抽到
+    const matchLoc = currentGlobalLoc === 'all' || !f.location || f.location === currentGlobalLoc;
     return notEaten && matchLoc;
   });
   
@@ -486,57 +479,35 @@ document.querySelectorAll('.tab button').forEach(b=>{
   }
 })
 
-// === 导入导出逻辑保持不变 ===
+// === 导入导出 ===
+save(); checkNewDay(); initLanguage();
+
 document.getElementById('exportBtn').onclick = () => {
-  const exportData = {
-    foods: foods,
-    eatenToday: eatenToday,
-    lastDate: localStorage.getItem('lastDate')
-  };
+  const exportData = { foods: foods, eatenToday: eatenToday, lastDate: localStorage.getItem('lastDate') };
   const dataStr = JSON.stringify(exportData);
   const blob = new Blob([dataStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "food_picker_backup.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = "food_picker_backup.json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 };
 
 const importInput = document.getElementById('importInput');
-document.getElementById('importBtn').onclick = () => {
-  importInput.click(); 
-};
-
+document.getElementById('importBtn').onclick = () => { importInput.click(); };
 importInput.addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
-  
   const reader = new FileReader();
   reader.onload = function(event) {
     try {
       const importedData = JSON.parse(event.target.result);
       if (importedData && importedData.foods && Array.isArray(importedData.foods)) {
         foods = importedData.foods;
-        // 如果导入的数据没有位置属性，给一个默认值防止报错
-        foods.forEach(f => { if (!f.location) f.location = 'all'; });
-        
+        foods.forEach(f => { if (!f.location || f.location === 'all') f.location = ''; }); // 兼容
         eatenToday = importedData.eatenToday || [];
-        if(importedData.lastDate) {
-          localStorage.setItem('lastDate', importedData.lastDate);
-        }
-        save();
-        render();
-        alert(t('importSuccess'));
-      } else {
-        alert(t('importFail'));
-      }
-    } catch (err) {
-      alert(t('importFail'));
-    }
+        if(importedData.lastDate) localStorage.setItem('lastDate', importedData.lastDate);
+        save(); updateGlobalLocDropdown(); render(); alert(t('importSuccess'));
+      } else alert(t('importFail'));
+    } catch (err) { alert(t('importFail')); }
     importInput.value = '';
   };
   reader.readAsText(file);
