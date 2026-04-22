@@ -145,7 +145,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
       <option value="staple" id="opt-staple">主食</option>
       <option value="drink" id="opt-drink">奶茶</option>
     </select>
-    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="地点(选填，不填则不限)">
+    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="地点(选填)">
   </div>
   
   <div class="custom-file-container">
@@ -175,7 +175,6 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
-// 精简了 placeholder 占位符，并使各语言的“保存”产生显著区分
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -184,7 +183,7 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(选填，不填则不限)", locAll: "不限地点"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(选填)", locAll: "不限地点"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
