@@ -50,6 +50,12 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .custom-file-btn { background: #eef2ff; color: #4E6EF2; padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; }
 .custom-file-text { font-size: 14px; color: var(--gray); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+
+.form-img-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; padding-left: 2px; }
+.preview-item { position: relative; width: 70px; height: 70px; flex-shrink: 0; }
+.preview-img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.preview-del { position: absolute; bottom: -6px; right: -6px; width: 20px; height: 20px; background: #ffebee; color: #f44336; border-radius: 50%; font-size: 16px; text-align: center; line-height: 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none; }
+
 .add-btn{background:#4E6EF2;color:#fff;width:100%;padding:14px;border:none;border-radius:14px;font-size:16px}
 .tab{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .tab button{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
@@ -83,13 +89,13 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
 }
 
-.viewer-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+.viewer-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; user-select: none; }
 .viewer-overlay.hide { display: none; }
-.viewer-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 36px; cursor: pointer; z-index: 10000; width: 40px; height: 40px; text-align: center; line-height: 40px; }
-.viewer-counter { position: absolute; top: 25px; left: 20px; color: #fff; font-size: 16px; font-weight: bold; z-index: 10000; letter-spacing: 1px;}
+.viewer-close { position: absolute; top: 12px; right: 20px; color: rgba(255,255,255,0.8); font-size: 36px; cursor: pointer; z-index: 10000; width: 40px; height: 40px; text-align: center; line-height: 40px; }
+.viewer-counter { position: absolute; top: 20px; left: 20px; color: rgba(255,255,255,0.8); font-size: 16px; font-weight: bold; z-index: 10000; letter-spacing: 1px;}
 .viewer-slider { display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; align-items: center; }
 .viewer-slider::-webkit-scrollbar { display: none; }
-.viewer-slider img { width: 100vw; max-height: 80vh; object-fit: contain; scroll-snap-align: center; flex: 0 0 100vw; }
+.viewer-slider img { width: 100vw; max-height: 80vh; object-fit: contain; scroll-snap-align: center; flex: 0 0 100vw; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -132,6 +138,8 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
     <span class="custom-file-text" id="customFileText" data-i18n="noFileText">未选择文件</span>
   </div>
   
+  <div id="formImagePreview" class="form-img-preview"></div>
+  
   <button class="add-btn" id="save" data-i18n="saveBtn">保存</button>
 </div>
 
@@ -159,6 +167,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
+
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -168,7 +177,7 @@ const i18n = {
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
     currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点", clickToView: "👉 点击查看详情",
-    max5Imgs: "最多只能上传5张图片哦！", selectedImgs: "已选择 {n} 张图片", picCount: "{n}图", processing: "处理中..."
+    max5Imgs: "最多只能上传5张图片哦！", selectedImgs: "已选择 {n} 张新图片", picCount: "{n}图", processing: "处理中..."
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
@@ -178,7 +187,7 @@ const i18n = {
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
     currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點", clickToView: "👉 點擊查看詳情",
-    max5Imgs: "最多只能上傳5張圖片哦！", selectedImgs: "已選擇 {n} 張圖片", picCount: "{n}圖", processing: "處理中..."
+    max5Imgs: "最多只能上傳5張圖片哦！", selectedImgs: "已選擇 {n} 張新圖片", picCount: "{n}圖", processing: "處理中..."
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
@@ -188,7 +197,7 @@ const i18n = {
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
     dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
     currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere", clickToView: "👉 Click to view details",
-    max5Imgs: "Max 5 images allowed!", selectedImgs: "{n} images selected", picCount: "{n} pics", processing: "Processing..."
+    max5Imgs: "Max 5 images allowed!", selectedImgs: "{n} new images selected", picCount: "{n} pics", processing: "Processing..."
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
@@ -198,7 +207,7 @@ const i18n = {
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
     dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
     currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて", clickToView: "👉 クリックして詳細を見る",
-    max5Imgs: "最大5枚までアップロード可能です！", selectedImgs: "{n}枚の画像を選択", picCount: "{n}枚", processing: "処理中..."
+    max5Imgs: "最大5枚までアップロード可能です！", selectedImgs: "{n}枚の新しい画像を選択", picCount: "{n}枚", processing: "処理中..."
   }
 }
 
@@ -206,6 +215,8 @@ const list = document.getElementById('list')
 const result = document.getElementById('result')
 const fileInput = document.getElementById('img')
 const customFileText = document.getElementById('customFileText')
+const formImagePreview = document.getElementById('formImagePreview');
+
 let foods = JSON.parse(localStorage.getItem('foods')) || []
 let eatenToday = JSON.parse(localStorage.getItem('eatenToday')) || []
 let currentCate = 'all'
@@ -214,17 +225,15 @@ let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
 let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all'
 let currentPickedId = null; 
 
+let currentEditOldImgs = [];
+
 foods.forEach(f => {
   if (f.cate === '主食') f.cate = 'staple'
   if (f.cate === '奶茶') f.cate = 'drink'
   if (!f.location || f.location === 'all') f.location = ''
   if (f.location === 'home') f.location = '家'
   if (f.location === 'office') f.location = '公司'
-  
-  if (f.img && !f.imgs) {
-    f.imgs = [f.img];
-    delete f.img;
-  }
+  if (f.img && !f.imgs) { f.imgs = [f.img]; delete f.img; }
 })
 
 document.getElementById('globalLoc').addEventListener('change', function(e) {
@@ -287,6 +296,7 @@ function updateLanguageUI() {
     document.getElementById('formTitle').textContent = t('formTitleEdit')
   }
   updateGlobalLocDropdown(); 
+  renderFormImages(); 
   render();
 }
 
@@ -314,6 +324,10 @@ function clearForm() {
   customFileText.textContent = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
   document.getElementById('formTitle').textContent = t('formTitleAdd')
+  
+  currentEditOldImgs = [];
+  formImagePreview.innerHTML = '';
+  
   editId = -1
 }
 
@@ -337,7 +351,6 @@ function render(){
   list.innerHTML = show.map(f => {
     const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
     const displayLoc = f.location ? f.location : t('locAll');
-    
     const coverImg = (f.imgs && f.imgs.length > 0) ? f.imgs[0] : '';
     const imgCountHtml = (f.imgs && f.imgs.length > 1) ? `<div class="img-count">${t('picCount').replace('{n}', f.imgs.length)}</div>` : '';
     
@@ -383,7 +396,29 @@ function edit(id){
   document.getElementById('foodLoc').value = f.location || '' 
   document.getElementById('formTitle').textContent = t('formTitleEdit')
   editId = id 
+  
+  currentEditOldImgs = [...f.imgs];
+  renderFormImages();
+  
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function renderFormImages() {
+  if (editId !== -1 && currentEditOldImgs.length > 0) {
+    formImagePreview.innerHTML = currentEditOldImgs.map((src, index) => `
+      <div class="preview-item">
+        <img src="${src}" class="preview-img">
+        <div class="preview-del" onclick="removeOldImg(${index})">×</div>
+      </div>
+    `).join('');
+  } else {
+    formImagePreview.innerHTML = '';
+  }
+}
+
+function removeOldImg(index) {
+  currentEditOldImgs.splice(index, 1);
+  renderFormImages();
 }
 
 function compressImageAsync(file) {
@@ -419,8 +454,9 @@ document.getElementById('save').onclick = async ()=>{
   
   if(!name) return alert(t('alertName'))
   
+  // 获取新选择的文件
   const files = Array.from(fileInput.files).slice(0, 5);
-  let newImgs = [];
+  let newCompressedImgs = []; 
   
   const saveBtn = document.getElementById('save');
   const oldBtnText = saveBtn.textContent;
@@ -429,7 +465,7 @@ document.getElementById('save').onclick = async ()=>{
     saveBtn.textContent = t('processing');
     saveBtn.disabled = true;
     try {
-      newImgs = await Promise.all(files.map(f => compressImageAsync(f)));
+      newCompressedImgs = await Promise.all(files.map(f => compressImageAsync(f)));
     } catch(e) { alert('图片处理失败'); }
     saveBtn.textContent = oldBtnText;
     saveBtn.disabled = false;
@@ -439,12 +475,16 @@ document.getElementById('save').onclick = async ()=>{
     const f = foods.find(x => x.id === editId)
     if(f) {
       f.name = name; f.desc = desc; f.cate = cate; f.location = foodLoc;
-      if(newImgs.length > 0) f.imgs = newImgs; 
+      
+      let finalImgs = [...currentEditOldImgs, ...newCompressedImgs];
+      
+      f.imgs = finalImgs.slice(0, 5); 
+      
       save(); render(); clearForm();
     }
   } else { 
-    if(newImgs.length === 0) return alert(t('alertImg'))
-    foods.push({ id: Date.now(), name, desc, cate, location: foodLoc, imgs: newImgs })
+    if(newCompressedImgs.length === 0) return alert(t('alertImg'))
+    foods.push({ id: Date.now(), name, desc, cate, location: foodLoc, imgs: newCompressedImgs.slice(0, 5) })
     save(); render(); clearForm();
   }
 }
@@ -508,11 +548,9 @@ const viewerCounter = document.getElementById('viewerCounter');
 function openViewer(id) {
   const f = foods.find(x => x.id === id);
   if(!f || !f.imgs || f.imgs.length === 0) return;
-  
   viewerSlider.innerHTML = f.imgs.map(src => `<img src="${src}">`).join('');
   viewerCounter.textContent = `1 / ${f.imgs.length}`;
   viewer.classList.remove('hide');
-  
   viewerSlider.onscroll = () => {
     const index = Math.round(viewerSlider.scrollLeft / window.innerWidth);
     viewerCounter.textContent = `${index + 1} / ${f.imgs.length}`;
@@ -522,8 +560,6 @@ function openViewer(id) {
 function closeViewer() {
   viewer.classList.add('hide');
 }
-
-// ===================================
 
 save(); checkNewDay(); initLanguage();
 
