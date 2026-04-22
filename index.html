@@ -25,26 +25,23 @@
 body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:0 auto}
 
 .header {
-  position: relative;
-  text-align: center;
-  margin: 10px 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 20px;
 }
 .title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
-  display: inline-block;
 }
 .lang-select {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--text);
-  font-size: 12px;
+  font-size: 14px;
   outline: none;
 }
 
@@ -72,7 +69,6 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
 
 input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;font-size:16px;background:var(--card);color:var(--text)}
 
-/* 优化布局比例：让下拉框固定宽度，给输入框腾出更多空间 */
 .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
 .form-row select { flex: 0 0 100px; margin-bottom: 0; } 
 .form-row input { flex: 1; margin-bottom: 0; } 
@@ -142,10 +138,10 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   
   <div class="form-row">
     <select id="cate">
-      <option value="staple" id="opt-staple">主食</option>
-      <option value="drink" id="opt-drink">奶茶</option>
+      <option value="staple" data-i18n="cateStaple">主食</option>
+      <option value="drink" data-i18n="cateDrink">奶茶</option>
     </select>
-    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="地点(选填)">
+    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="地点(不填默认不限)">
   </div>
   
   <div class="custom-file-container">
@@ -159,8 +155,8 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 
 <div class="tab">
   <button class="active" data-cate="all" data-i18n="tabAll">全部</button>
-  <button data-cate="staple" id="tab-staple">主食</button>
-  <button data-cate="drink" id="tab-drink">奶茶</button>
+  <button data-cate="staple" data-i18n="cateStaple">主食</button>
+  <button data-cate="drink" data-i18n="cateDrink">奶茶</button>
 </div>
 
 <div id="list"></div>
@@ -175,6 +171,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
+// 更新了分类的文案，让各语言差异更明显
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -183,34 +180,34 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(选填)", locAll: "不限地点"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
-    namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主食", cateDrink: "奶茶",
+    namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主餐", cateDrink: "飲品", // 修改为差异化词汇
     saveBtn: "儲存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
-    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(選填)", locAll: "不限地點"
+    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
-    namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Staple", cateDrink: "Drink",
+    namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Meals", cateDrink: "Drinks", // 修改为更自然的英文
     saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
     dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
-    currentLocLabel: "📍 Location", locPlaceholder: "Location (Optional)", locAll: "Anywhere"
+    currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere"
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
-    namePlaceholder: "店名/料理名", descPlaceholder: "メモ・評価", cateStaple: "主食", cateDrink: "ドリンク",
+    namePlaceholder: "店名/料理名", descPlaceholder: "メモ・評価", cateStaple: "メイン", cateDrink: "ドリンク",
     saveBtn: "保存する", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
     dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
-    currentLocLabel: "📍 現在地", locPlaceholder: "場所(任意)", locAll: "すべて"
+    currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて"
   }
 }
 
@@ -279,16 +276,13 @@ function updateLanguageUI() {
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       el.placeholder = t(key)
     } else {
-      el.innerText = t(key)
+      // 关键修复：使用 textContent 替换 innerText，完美兼容手机端下拉框
+      el.textContent = t(key) 
     }
   })
-  document.getElementById('opt-staple').innerText = t('cateStaple')
-  document.getElementById('opt-drink').innerText = t('cateDrink')
-  document.getElementById('tab-staple').innerText = t('cateStaple')
-  document.getElementById('tab-drink').innerText = t('cateDrink')
   
   if (editId !== -1) {
-    document.getElementById('formTitle').innerText = t('formTitleEdit')
+    document.getElementById('formTitle').textContent = t('formTitleEdit')
   }
   
   updateGlobalLocDropdown(); 
@@ -316,18 +310,18 @@ function clearForm() {
   document.getElementById('desc').value = ''
   document.getElementById('foodLoc').value = '' 
   fileInput.value = '' 
-  customFileText.innerText = t('noFileText')
+  customFileText.textContent = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
-  document.getElementById('formTitle').innerText = t('formTitleAdd')
+  document.getElementById('formTitle').textContent = t('formTitleAdd')
   editId = -1
 }
 
 fileInput.addEventListener('change', function() {
   if (this.files && this.files.length > 0) {
-    customFileText.innerText = this.files[0].name;
+    customFileText.textContent = this.files[0].name;
     customFileText.removeAttribute('data-i18n'); 
   } else {
-    customFileText.innerText = t('noFileText');
+    customFileText.textContent = t('noFileText');
     customFileText.setAttribute('data-i18n', 'noFileText');
   }
 });
@@ -384,7 +378,7 @@ function edit(id){
   document.getElementById('desc').value = f.desc
   document.getElementById('cate').value = f.cate
   document.getElementById('foodLoc').value = f.location || '' 
-  document.getElementById('formTitle').innerText = t('formTitleEdit')
+  document.getElementById('formTitle').textContent = t('formTitleEdit')
   editId = id 
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
