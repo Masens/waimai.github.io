@@ -24,45 +24,15 @@
 }
 body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:0 auto}
 
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin: 10px 0 20px;
-}
-.title {
-  font-size: 24px;
-  font-weight: bold;
-}
-.lang-select {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-}
+.header { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 10px 0 20px; }
+.title { font-size: 24px; font-weight: bold; }
+.lang-select { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; outline: none; }
 
-.location-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--card);
-  padding: 10px 16px;
-  border-radius: 14px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px #00000008;
-}
+.location-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 10px 16px; border-radius: 14px; margin-bottom: 16px; box-shadow: 0 2px 10px #00000008; }
 .location-bar span { font-weight: bold; font-size: 15px; }
-.location-bar select {
-  width: auto; margin-bottom: 0; padding: 6px 12px; border: none; 
-  background: var(--bg); border-radius: 8px; font-weight: bold; color: var(--text);
-}
+.location-bar select { width: auto; margin-bottom: 0; padding: 6px 12px; border: none; background: var(--bg); border-radius: 8px; font-weight: bold; color: var(--text); }
 
 .random-btn{background:#FF7A00;color:#fff;font-size:18px;font-weight:bold;width:100%;padding:16px;border:none;border-radius:16px;margin-bottom:16px}
-
 .result{background:#FFF4E5;color:#FF5C00;padding:14px;border-radius:14px;text-align:center;font-size:17px;font-weight:bold;margin-bottom:16px;cursor:pointer;user-select:none;transition:transform 0.1s;}
 .result:active{transform:scale(0.98);}
 .result.hide{display:none}
@@ -76,16 +46,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .form-row select { flex: 0 0 100px; margin-bottom: 0; } 
 .form-row input { flex: 1; margin-bottom: 0; } 
 
-.custom-file-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  border-radius: 12px;
-}
+.custom-file-container { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; }
 .custom-file-btn { background: #eef2ff; color: #4E6EF2; padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; }
 .custom-file-text { font-size: 14px; color: var(--gray); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -95,7 +56,11 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .tab button.active{background:#4E6EF2;color:#fff;border-color:#4E6EF2}
 
 .item{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:10px;transition:all 0.3s;}
-.item img{width:70px;height:70px;object-fit:cover;border-radius:10px;margin-right:12px}
+
+.img-wrap { position: relative; cursor: pointer; margin-right: 12px; flex-shrink: 0; }
+.item img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; display: block; }
+.img-count { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 8px; backdrop-filter: blur(2px);}
+
 .item-info{flex:1}
 .item-name{font-weight:bold;font-size:16px;margin-bottom:4px}
 .item-desc{font-size:13px;color:var(--gray)}
@@ -112,13 +77,19 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .btn-export{background:#e8f5e9;color:#2e7d32;}
 .btn-import{background:#fff3e0;color:#ef6c00;}
 
-.item-highlight {
-  animation: flashHighlight 1.5s ease-out;
-}
+.item-highlight { animation: flashHighlight 1.5s ease-out; }
 @keyframes flashHighlight {
   0% { box-shadow: 0 0 0 3px #FF7A00; transform: scale(1.02); }
   100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
 }
+
+.viewer-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+.viewer-overlay.hide { display: none; }
+.viewer-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 36px; cursor: pointer; z-index: 10000; width: 40px; height: 40px; text-align: center; line-height: 40px; }
+.viewer-counter { position: absolute; top: 25px; left: 20px; color: #fff; font-size: 16px; font-weight: bold; z-index: 10000; letter-spacing: 1px;}
+.viewer-slider { display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; align-items: center; }
+.viewer-slider::-webkit-scrollbar { display: none; }
+.viewer-slider img { width: 100vw; max-height: 80vh; object-fit: contain; scroll-snap-align: center; flex: 0 0 100vw; }
 </style>
 </head>
 <body>
@@ -156,7 +127,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   </div>
   
   <div class="custom-file-container">
-    <input type="file" id="img" accept="image/*" style="display: none;">
+    <input type="file" id="img" accept="image/*" multiple style="display: none;">
     <label for="img" class="custom-file-btn" data-i18n="chooseFileBtn">选择图片</label>
     <span class="custom-file-text" id="customFileText" data-i18n="noFileText">未选择文件</span>
   </div>
@@ -181,6 +152,12 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   </div>
 </div>
 
+<div id="imageViewer" class="viewer-overlay hide">
+  <div class="viewer-close" onclick="closeViewer()">×</div>
+  <div class="viewer-counter" id="viewerCounter">1 / 1</div>
+  <div class="viewer-slider" id="viewerSlider"></div>
+</div>
+
 <script>
 const i18n = {
   'zh-CN': {
@@ -190,7 +167,8 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点", clickToView: "👉 点击查看详情"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点", clickToView: "👉 点击查看详情",
+    max5Imgs: "最多只能上传5张图片哦！", selectedImgs: "已选择 {n} 张图片", picCount: "{n}图", processing: "处理中..."
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
@@ -199,7 +177,8 @@ const i18n = {
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
-    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點", clickToView: "👉 點擊查看詳情"
+    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點", clickToView: "👉 點擊查看詳情",
+    max5Imgs: "最多只能上傳5張圖片哦！", selectedImgs: "已選擇 {n} 張圖片", picCount: "{n}圖", processing: "處理中..."
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
@@ -208,7 +187,8 @@ const i18n = {
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
     dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
-    currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere", clickToView: "👉 Click to view details"
+    currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere", clickToView: "👉 Click to view details",
+    max5Imgs: "Max 5 images allowed!", selectedImgs: "{n} images selected", picCount: "{n} pics", processing: "Processing..."
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
@@ -217,7 +197,8 @@ const i18n = {
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
     dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
-    currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて", clickToView: "👉 クリックして詳細を見る"
+    currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて", clickToView: "👉 クリックして詳細を見る",
+    max5Imgs: "最大5枚までアップロード可能です！", selectedImgs: "{n}枚の画像を選択", picCount: "{n}枚", processing: "処理中..."
   }
 }
 
@@ -239,6 +220,11 @@ foods.forEach(f => {
   if (!f.location || f.location === 'all') f.location = ''
   if (f.location === 'home') f.location = '家'
   if (f.location === 'office') f.location = '公司'
+  
+  if (f.img && !f.imgs) {
+    f.imgs = [f.img];
+    delete f.img;
+  }
 })
 
 document.getElementById('globalLoc').addEventListener('change', function(e) {
@@ -333,7 +319,9 @@ function clearForm() {
 
 fileInput.addEventListener('change', function() {
   if (this.files && this.files.length > 0) {
-    customFileText.textContent = this.files[0].name;
+    if (this.files.length > 5) alert(t('max5Imgs'));
+    const count = Math.min(this.files.length, 5);
+    customFileText.textContent = t('selectedImgs').replace('{n}', count);
     customFileText.removeAttribute('data-i18n'); 
   } else {
     customFileText.textContent = t('noFileText');
@@ -350,9 +338,15 @@ function render(){
     const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
     const displayLoc = f.location ? f.location : t('locAll');
     
+    const coverImg = (f.imgs && f.imgs.length > 0) ? f.imgs[0] : '';
+    const imgCountHtml = (f.imgs && f.imgs.length > 1) ? `<div class="img-count">${t('picCount').replace('{n}', f.imgs.length)}</div>` : '';
+    
     return `
     <div class="item" id="item-${f.id}">
-      <img src="${f.img}">
+      <div class="img-wrap" onclick="openViewer(${f.id})">
+        <img src="${coverImg}">
+        ${imgCountHtml}
+      </div>
       <div class="item-info">
         <div class="item-name">${f.name}</div>
         <div class="item-desc">${f.desc}</div>
@@ -392,58 +386,66 @@ function edit(id){
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-function compressImage(file, callback) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      let width = img.width;
-      let height = img.height;
-      const MAX_SIZE = 800;
-      if (width > height) {
-        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
-      } else {
-        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+function compressImageAsync(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let width = img.width, height = img.height;
+        const MAX_SIZE = 600; 
+        if (width > height) {
+          if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+        } else {
+          if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.5)); 
       }
-      canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
-      callback(compressedDataUrl);
+      img.src = e.target.result;
     }
-    img.src = e.target.result;
-  }
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  });
 }
 
-document.getElementById('save').onclick = ()=>{
+document.getElementById('save').onclick = async ()=>{
   const name = document.getElementById('name').value.trim()
   const desc = document.getElementById('desc').value.trim()
   const cate = document.getElementById('cate').value
   const foodLoc = document.getElementById('foodLoc').value.trim() 
-  const file = fileInput.files[0]
   
   if(!name) return alert(t('alertName'))
+  
+  const files = Array.from(fileInput.files).slice(0, 5);
+  let newImgs = [];
+  
+  const saveBtn = document.getElementById('save');
+  const oldBtnText = saveBtn.textContent;
+  
+  if(files.length > 0) {
+    saveBtn.textContent = t('processing');
+    saveBtn.disabled = true;
+    try {
+      newImgs = await Promise.all(files.map(f => compressImageAsync(f)));
+    } catch(e) { alert('图片处理失败'); }
+    saveBtn.textContent = oldBtnText;
+    saveBtn.disabled = false;
+  }
   
   if(editId !== -1){ 
     const f = foods.find(x => x.id === editId)
     if(f) {
       f.name = name; f.desc = desc; f.cate = cate; f.location = foodLoc;
-      if(file){
-        compressImage(file, (compressedImg) => {
-          f.img = compressedImg; save(); render(); clearForm();
-        });
-        return 
-      }
-    }
-    save(); render(); clearForm();
-  } else { 
-    if(!file) return alert(t('alertImg'))
-    compressImage(file, (compressedImg) => {
-      foods.push({ id: Date.now(), name, desc, cate, location: foodLoc, img: compressedImg })
+      if(newImgs.length > 0) f.imgs = newImgs; 
       save(); render(); clearForm();
-    });
+    }
+  } else { 
+    if(newImgs.length === 0) return alert(t('alertImg'))
+    foods.push({ id: Date.now(), name, desc, cate, location: foodLoc, imgs: newImgs })
+    save(); render(); clearForm();
   }
 }
 
@@ -469,7 +471,6 @@ document.getElementById('randomBtn').onclick = ()=>{
 
 document.getElementById('result').onclick = () => {
   if (!currentPickedId) return;
-  
   const targetFood = foods.find(f => f.id === currentPickedId);
   if (!targetFood) return;
 
@@ -485,7 +486,6 @@ document.getElementById('result').onclick = () => {
   const targetEl = document.getElementById('item-' + currentPickedId);
   if (targetEl) {
     targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
     targetEl.classList.remove('item-highlight');
     void targetEl.offsetWidth; 
     targetEl.classList.add('item-highlight');
@@ -500,6 +500,30 @@ document.querySelectorAll('.tab button').forEach(b=>{
     render()
   }
 })
+
+const viewer = document.getElementById('imageViewer');
+const viewerSlider = document.getElementById('viewerSlider');
+const viewerCounter = document.getElementById('viewerCounter');
+
+function openViewer(id) {
+  const f = foods.find(x => x.id === id);
+  if(!f || !f.imgs || f.imgs.length === 0) return;
+  
+  viewerSlider.innerHTML = f.imgs.map(src => `<img src="${src}">`).join('');
+  viewerCounter.textContent = `1 / ${f.imgs.length}`;
+  viewer.classList.remove('hide');
+  
+  viewerSlider.onscroll = () => {
+    const index = Math.round(viewerSlider.scrollLeft / window.innerWidth);
+    viewerCounter.textContent = `${index + 1} / ${f.imgs.length}`;
+  };
+}
+
+function closeViewer() {
+  viewer.classList.add('hide');
+}
+
+// ===================================
 
 save(); checkNewDay(); initLanguage();
 
@@ -523,7 +547,10 @@ importInput.addEventListener('change', function(e) {
       const importedData = JSON.parse(event.target.result);
       if (importedData && importedData.foods && Array.isArray(importedData.foods)) {
         foods = importedData.foods;
-        foods.forEach(f => { if (!f.location || f.location === 'all') f.location = ''; });
+        foods.forEach(f => { 
+          if (!f.location || f.location === 'all') f.location = ''; 
+          if(f.img && !f.imgs) { f.imgs = [f.img]; delete f.img; }
+        });
         eatenToday = importedData.eatenToday || [];
         if(importedData.lastDate) localStorage.setItem('lastDate', importedData.lastDate);
         save(); updateGlobalLocDropdown(); render(); alert(t('importSuccess'));
