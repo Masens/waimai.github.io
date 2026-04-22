@@ -62,8 +62,11 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
 }
 
 .random-btn{background:#FF7A00;color:#fff;font-size:18px;font-weight:bold;width:100%;padding:16px;border:none;border-radius:16px;margin-bottom:16px}
-.result{background:#FFF4E5;color:#FF5C00;padding:14px;border-radius:14px;text-align:center;font-size:17px;font-weight:bold;margin-bottom:16px}
+
+.result{background:#FFF4E5;color:#FF5C00;padding:14px;border-radius:14px;text-align:center;font-size:17px;font-weight:bold;margin-bottom:16px;cursor:pointer;user-select:none;transition:transform 0.1s;}
+.result:active{transform:scale(0.98);}
 .result.hide{display:none}
+
 .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px #00000008;margin-bottom:16px}
 .card h3{font-size:17px;margin-bottom:12px}
 
@@ -91,7 +94,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .tab button{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
 .tab button.active{background:#4E6EF2;color:#fff;border-color:#4E6EF2}
 
-.item{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:10px}
+.item{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:10px;transition:all 0.3s;}
 .item img{width:70px;height:70px;object-fit:cover;border-radius:10px;margin-right:12px}
 .item-info{flex:1}
 .item-name{font-weight:bold;font-size:16px;margin-bottom:4px}
@@ -108,6 +111,14 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 
 .btn-export{background:#e8f5e9;color:#2e7d32;}
 .btn-import{background:#fff3e0;color:#ef6c00;}
+
+.item-highlight {
+  animation: flashHighlight 1.5s ease-out;
+}
+@keyframes flashHighlight {
+  0% { box-shadow: 0 0 0 3px #FF7A00; transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -171,7 +182,6 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
-// 更新了分类的文案，让各语言差异更明显
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -180,25 +190,25 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(不填默认不限)", locAll: "不限地点", clickToView: "👉 点击查看详情"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
-    namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主餐", cateDrink: "飲品", // 修改为差异化词汇
+    namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主餐", cateDrink: "飲品",
     saveBtn: "儲存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
-    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點"
+    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(不填預設不限)", locAll: "不限地點", clickToView: "👉 點擊查看詳情"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
-    namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Meals", cateDrink: "Drinks", // 修改为更自然的英文
+    namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Meals", cateDrink: "Drinks", 
     saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
     dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
-    currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere"
+    currentLocLabel: "📍 Location", locPlaceholder: "Location (blank = anywhere)", locAll: "Anywhere", clickToView: "👉 Click to view details"
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
@@ -207,7 +217,7 @@ const i18n = {
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
     dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
-    currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて"
+    currentLocLabel: "📍 現在地", locPlaceholder: "場所(空白で制限なし)", locAll: "すべて", clickToView: "👉 クリックして詳細を見る"
   }
 }
 
@@ -221,6 +231,7 @@ let currentCate = 'all'
 let editId = -1 
 let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
 let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all'
+let currentPickedId = null; 
 
 foods.forEach(f => {
   if (f.cate === '主食') f.cate = 'staple'
@@ -267,6 +278,13 @@ function initLanguage() {
     currentLang = e.target.value;
     localStorage.setItem('app_lang', currentLang);
     updateLanguageUI();
+    if(currentPickedId && !result.classList.contains('hide')) {
+      const pick = foods.find(x => x.id === currentPickedId);
+      if(pick) {
+        const displayCate = pick.cate === 'staple' ? t('cateStaple') : (pick.cate === 'drink' ? t('cateDrink') : pick.cate);
+        result.innerHTML = `<div>${t('eatResultPrefix')}${pick.name}（${displayCate}）</div><div style="font-size:13px;margin-top:6px;opacity:0.8;">${t('clickToView')}</div>`;
+      }
+    }
   }
 }
 
@@ -276,15 +294,12 @@ function updateLanguageUI() {
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       el.placeholder = t(key)
     } else {
-      // 关键修复：使用 textContent 替换 innerText，完美兼容手机端下拉框
       el.textContent = t(key) 
     }
   })
-  
   if (editId !== -1) {
     document.getElementById('formTitle').textContent = t('formTitleEdit')
   }
-  
   updateGlobalLocDropdown(); 
   render();
 }
@@ -328,21 +343,15 @@ fileInput.addEventListener('change', function() {
 
 function render(){
   const uneaten = foods.filter(f => !eatenToday.includes(f.id));
-  
-  const locFiltered = currentGlobalLoc === 'all' 
-    ? uneaten 
-    : uneaten.filter(f => !f.location || f.location === currentGlobalLoc);
-    
-  const show = currentCate === 'all' 
-    ? locFiltered 
-    : locFiltered.filter(f => f.cate === currentCate);
+  const locFiltered = currentGlobalLoc === 'all' ? uneaten : uneaten.filter(f => !f.location || f.location === currentGlobalLoc);
+  const show = currentCate === 'all' ? locFiltered : locFiltered.filter(f => f.cate === currentCate);
 
   list.innerHTML = show.map(f => {
     const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
     const displayLoc = f.location ? f.location : t('locAll');
     
     return `
-    <div class="item">
+    <div class="item" id="item-${f.id}">
       <img src="${f.img}">
       <div class="item-info">
         <div class="item-name">${f.name}</div>
@@ -450,11 +459,38 @@ document.getElementById('randomBtn').onclick = ()=>{
     return alert(t('alertEaten'))
   }
   const pick = pool[Math.floor(Math.random()*pool.length)]
+  currentPickedId = pick.id; 
+  
   const displayCate = pick.cate === 'staple' ? t('cateStaple') : (pick.cate === 'drink' ? t('cateDrink') : pick.cate)
   
   result.classList.remove('hide')
-  result.innerText = t('eatResultPrefix') + pick.name + '（' + displayCate + '）'
+  result.innerHTML = `<div>${t('eatResultPrefix')}${pick.name}（${displayCate}）</div><div style="font-size:13px;margin-top:6px;opacity:0.8;">${t('clickToView')}</div>`;
 }
+
+document.getElementById('result').onclick = () => {
+  if (!currentPickedId) return;
+  
+  const targetFood = foods.find(f => f.id === currentPickedId);
+  if (!targetFood) return;
+
+  if (currentCate !== 'all' && targetFood.cate !== currentCate) {
+    currentCate = 'all';
+    document.querySelectorAll('.tab button').forEach(x => {
+      if (x.dataset.cate === 'all') x.classList.add('active');
+      else x.classList.remove('active');
+    });
+    render();
+  }
+
+  const targetEl = document.getElementById('item-' + currentPickedId);
+  if (targetEl) {
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    targetEl.classList.remove('item-highlight');
+    void targetEl.offsetWidth; 
+    targetEl.classList.add('item-highlight');
+  }
+};
 
 document.querySelectorAll('.tab button').forEach(b=>{
   b.onclick = ()=>{
