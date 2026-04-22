@@ -82,7 +82,6 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* ------------------------------ */
 
 .add-btn{background:#4E6EF2;color:#fff;width:100%;padding:14px;border:none;border-radius:14px;font-size:16px}
 .tab{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -95,10 +94,14 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 .item-desc{font-size:13px;color:var(--gray)}
 .item-tag{font-size:12px;background:#f0f0f0;color:#555;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
 .btns{display:flex;gap:8px;margin-top:8px}
-.btns button{flex:1;padding:6px 0;border-radius:8px;border:none;font-size:14px}
+.btns button{flex:1;padding:6px 0;border-radius:8px;border:none;font-size:14px;cursor:pointer;}
 .btn-edit{background:#eef2ff;color:#4E6EF2}
 .btn-del{background:#ffebee;color:#f44336}
 .btn-eat{background:#e8f5e9;color:#2e7d32}
+
+/* 导入导出按钮专享样式 */
+.btn-export{background:#e8f5e9;color:#2e7d32;}
+.btn-import{background:#fff3e0;color:#ef6c00;}
 </style>
 </head>
 <body>
@@ -142,6 +145,15 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 
 <div id="list"></div>
 
+<div class="card" style="margin-top: 20px;">
+  <h3 data-i18n="dataBackupTitle">数据备份与恢复</h3>
+  <div class="btns" style="margin-top: 0;">
+    <button class="btn-export" id="exportBtn" data-i18n="exportBtn">导出数据</button>
+    <button class="btn-import" id="importBtn" data-i18n="importBtn">导入数据</button>
+    <input type="file" id="importInput" accept=".json" style="display: none;">
+  </div>
+</div>
+
 <script>
 const i18n = {
   'zh-CN': {
@@ -149,28 +161,32 @@ const i18n = {
     namePlaceholder: "店铺/菜品名称", descPlaceholder: "评价或备注", cateStaple: "主食", cateDrink: "奶茶",
     saveBtn: "保存", tabAll: "全部", btnEdit: "编辑", btnDel: "删除", btnEat: "今天吃过",
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
-    confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃："
+    confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
+    dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
     namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主食", cateDrink: "奶茶",
     saveBtn: "保存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
-    confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃："
+    confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
+    dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
     namePlaceholder: "Shop/Dish Name", descPlaceholder: "Review or Notes", cateStaple: "Staple", cateDrink: "Drink",
     saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
-    confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: "
+    confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
+    dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed. Please check the file."
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
     namePlaceholder: "店名/料理名", descPlaceholder: "メモ・評価", cateStaple: "主食", cateDrink: "ドリンク",
     saveBtn: "保存", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
-    confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯："
+    confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
+    dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。ファイルを確認してください。"
   }
 }
 
@@ -246,7 +262,6 @@ function clearForm() {
   fileInput.value = '' 
   customFileText.innerText = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
-  
   document.getElementById('formTitle').innerText = t('formTitleAdd')
   editId = -1
 }
@@ -393,6 +408,64 @@ document.querySelectorAll('.tab button').forEach(b=>{
     render()
   }
 })
+
+// === 新增：导入导出功能逻辑 ===
+document.getElementById('exportBtn').onclick = () => {
+  // 把数据打包
+  const exportData = {
+    foods: foods,
+    eatenToday: eatenToday,
+    lastDate: localStorage.getItem('lastDate')
+  };
+  // 转换成 JSON 字符串，生成 Blob 虚拟文件
+  const dataStr = JSON.stringify(exportData);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  // 创建一个隐藏的 a 标签触发下载
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "food_picker_backup.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+const importInput = document.getElementById('importInput');
+document.getElementById('importBtn').onclick = () => {
+  importInput.click(); // 点击按钮时，触发隐藏的文件选择器
+};
+
+importInput.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    try {
+      const importedData = JSON.parse(event.target.result);
+      if (importedData && importedData.foods && Array.isArray(importedData.foods)) {
+        foods = importedData.foods;
+        eatenToday = importedData.eatenToday || [];
+        if(importedData.lastDate) {
+          localStorage.setItem('lastDate', importedData.lastDate);
+        }
+        save();
+        render();
+        alert(t('importSuccess'));
+      } else {
+        alert(t('importFail'));
+      }
+    } catch (err) {
+      alert(t('importFail'));
+    }
+    // 清空 input，以便可以重复选择同一个文件导入
+    importInput.value = '';
+  };
+  reader.readAsText(file); // 以文本格式读取 json
+});
+// =================================
 </script>
 </body>
 </html>
