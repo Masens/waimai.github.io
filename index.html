@@ -72,9 +72,10 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
 
 input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;font-size:16px;background:var(--card);color:var(--text)}
 
-/* 表单同行布局 */
+/* 优化布局比例：让下拉框固定宽度，给输入框腾出更多空间 */
 .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.form-row select, .form-row input { flex: 1; margin-bottom: 0; }
+.form-row select { flex: 0 0 100px; margin-bottom: 0; } 
+.form-row input { flex: 1; margin-bottom: 0; } 
 
 .custom-file-container {
   display: flex;
@@ -128,7 +129,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 <div class="location-bar">
   <span data-i18n="currentLocLabel">📍 当前位置</span>
   <select id="globalLoc">
-    </select>
+  </select>
 </div>
 
 <button class="random-btn" id="randomBtn" data-i18n="randomBtn">帮我随机选一个！</button>
@@ -144,7 +145,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
       <option value="staple" id="opt-staple">主食</option>
       <option value="drink" id="opt-drink">奶茶</option>
     </select>
-    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="输入地点(留空则不限)">
+    <input type="text" id="foodLoc" data-i18n="locPlaceholder" placeholder="地点(选填，不填则不限)">
   </div>
   
   <div class="custom-file-container">
@@ -174,7 +175,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
-// 更新了手动输入地点的文案翻译
+// 精简了 placeholder 占位符，并使各语言的“保存”产生显著区分
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -183,16 +184,16 @@ const i18n = {
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
-    currentLocLabel: "📍 当前位置", locPlaceholder: "输入地点(留空则不限)", locAll: "不限地点"
+    currentLocLabel: "📍 当前位置", locPlaceholder: "地点(选填，不填则不限)", locAll: "不限地点"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
     namePlaceholder: "店鋪/菜品名稱", descPlaceholder: "評價或備註", cateStaple: "主食", cateDrink: "奶茶",
-    saveBtn: "保存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
+    saveBtn: "儲存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
     dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
-    currentLocLabel: "📍 當前位置", locPlaceholder: "輸入地點(留空則不限)", locAll: "不限地點"
+    currentLocLabel: "📍 當前位置", locPlaceholder: "地點(選填)", locAll: "不限地點"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
@@ -201,16 +202,16 @@ const i18n = {
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
     dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed.",
-    currentLocLabel: "📍 Location", locPlaceholder: "Location (leave blank for anywhere)", locAll: "Anywhere"
+    currentLocLabel: "📍 Location", locPlaceholder: "Location (Optional)", locAll: "Anywhere"
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
     namePlaceholder: "店名/料理名", descPlaceholder: "メモ・評価", cateStaple: "主食", cateDrink: "ドリンク",
-    saveBtn: "保存", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
+    saveBtn: "保存する", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
     dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。",
-    currentLocLabel: "📍 現在地", locPlaceholder: "場所 (空白なら場所を問わない)", locAll: "すべて"
+    currentLocLabel: "📍 現在地", locPlaceholder: "場所(任意)", locAll: "すべて"
   }
 }
 
@@ -225,7 +226,6 @@ let editId = -1
 let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
 let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all'
 
-// 数据兼容处理：把以前的'all'和旧版'home'/'office'转换为字符串
 foods.forEach(f => {
   if (f.cate === '主食') f.cate = 'staple'
   if (f.cate === '奶茶') f.cate = 'drink'
@@ -234,7 +234,6 @@ foods.forEach(f => {
   if (f.location === 'office') f.location = '公司'
 })
 
-// 监听全局位置切换
 document.getElementById('globalLoc').addEventListener('change', function(e) {
   currentGlobalLoc = e.target.value;
   localStorage.setItem('app_global_loc', currentGlobalLoc);
@@ -243,13 +242,10 @@ document.getElementById('globalLoc').addEventListener('change', function(e) {
 
 function t(key) { return i18n[currentLang][key] || key }
 
-// 核心函数：根据录入的食物数据，自动生成全局下拉菜单
 function updateGlobalLocDropdown() {
   const locSelect = document.getElementById('globalLoc');
-  // 获取所有不为空的独特地点
   const uniqueLocs = [...new Set(foods.map(f => f.location).filter(l => l.trim() !== ''))];
 
-  // 生成下拉列表
   locSelect.innerHTML = `<option value="all">${t('locAll')}</option>`;
   uniqueLocs.forEach(loc => {
     const opt = document.createElement('option');
@@ -258,7 +254,6 @@ function updateGlobalLocDropdown() {
     locSelect.appendChild(opt);
   });
 
-  // 如果上次选择的位置还在列表里，保留选择；否则重置为'all'
   if (uniqueLocs.includes(currentGlobalLoc) || currentGlobalLoc === 'all') {
     locSelect.value = currentGlobalLoc;
   } else {
@@ -297,7 +292,7 @@ function updateLanguageUI() {
     document.getElementById('formTitle').innerText = t('formTitleEdit')
   }
   
-  updateGlobalLocDropdown(); // 刷新下拉框文字
+  updateGlobalLocDropdown(); 
   render();
 }
 
@@ -314,13 +309,13 @@ function checkNewDay() {
 function save(){
   localStorage.setItem('foods', JSON.stringify(foods))
   localStorage.setItem('eatenToday', JSON.stringify(eatenToday))
-  updateGlobalLocDropdown(); // 每次保存食物数据时，更新位置下拉框
+  updateGlobalLocDropdown(); 
 }
 
 function clearForm() {
   document.getElementById('name').value = ''
   document.getElementById('desc').value = ''
-  document.getElementById('foodLoc').value = '' // 清空地点输入
+  document.getElementById('foodLoc').value = '' 
   fileInput.value = '' 
   customFileText.innerText = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
@@ -341,7 +336,6 @@ fileInput.addEventListener('change', function() {
 function render(){
   const uneaten = foods.filter(f => !eatenToday.includes(f.id));
   
-  // 过滤逻辑：如果没填地点，则任何全局位置都能看到它；否则只显示匹配当前地点的
   const locFiltered = currentGlobalLoc === 'all' 
     ? uneaten 
     : uneaten.filter(f => !f.location || f.location === currentGlobalLoc);
@@ -390,7 +384,7 @@ function edit(id){
   document.getElementById('name').value = f.name
   document.getElementById('desc').value = f.desc
   document.getElementById('cate').value = f.cate
-  document.getElementById('foodLoc').value = f.location || '' // 回显输入的地点
+  document.getElementById('foodLoc').value = f.location || '' 
   document.getElementById('formTitle').innerText = t('formTitleEdit')
   editId = id 
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -425,7 +419,7 @@ document.getElementById('save').onclick = ()=>{
   const name = document.getElementById('name').value.trim()
   const desc = document.getElementById('desc').value.trim()
   const cate = document.getElementById('cate').value
-  const foodLoc = document.getElementById('foodLoc').value.trim() // 获取手填的地点
+  const foodLoc = document.getElementById('foodLoc').value.trim() 
   const file = fileInput.files[0]
   
   if(!name) return alert(t('alertName'))
@@ -454,7 +448,6 @@ document.getElementById('save').onclick = ()=>{
 document.getElementById('randomBtn').onclick = ()=>{
   const pool = foods.filter(f => {
     const notEaten = !eatenToday.includes(f.id);
-    // 不限地点的外卖（空字符串），在任何全局位置都能被抽到
     const matchLoc = currentGlobalLoc === 'all' || !f.location || f.location === currentGlobalLoc;
     return notEaten && matchLoc;
   });
@@ -479,7 +472,6 @@ document.querySelectorAll('.tab button').forEach(b=>{
   }
 })
 
-// === 导入导出 ===
 save(); checkNewDay(); initLanguage();
 
 document.getElementById('exportBtn').onclick = () => {
@@ -502,7 +494,7 @@ importInput.addEventListener('change', function(e) {
       const importedData = JSON.parse(event.target.result);
       if (importedData && importedData.foods && Array.isArray(importedData.foods)) {
         foods = importedData.foods;
-        foods.forEach(f => { if (!f.location || f.location === 'all') f.location = ''; }); // 兼容
+        foods.forEach(f => { if (!f.location || f.location === 'all') f.location = ''; });
         eatenToday = importedData.eatenToday || [];
         if(importedData.lastDate) localStorage.setItem('lastDate', importedData.lastDate);
         save(); updateGlobalLocDropdown(); render(); alert(t('importSuccess'));
