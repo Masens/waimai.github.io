@@ -27,7 +27,7 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
 .header {
   position: relative;
   text-align: center;
-  margin: 10px 0 24px;
+  margin: 10px 0 16px;
 }
 .title {
   font-size: 22px;
@@ -48,12 +48,34 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:420px;margin:
   outline: none;
 }
 
+/* 全局位置栏样式 */
+.location-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  padding: 10px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px #00000008;
+}
+.location-bar span { font-weight: bold; font-size: 15px; }
+.location-bar select {
+  width: auto; margin-bottom: 0; padding: 6px 12px; border: none; 
+  background: var(--bg); border-radius: 8px; font-weight: bold; color: var(--text);
+}
+
 .random-btn{background:#FF7A00;color:#fff;font-size:18px;font-weight:bold;width:100%;padding:16px;border:none;border-radius:16px;margin-bottom:16px}
 .result{background:#FFF4E5;color:#FF5C00;padding:14px;border-radius:14px;text-align:center;font-size:17px;font-weight:bold;margin-bottom:16px}
 .result.hide{display:none}
 .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px #00000008;margin-bottom:16px}
 .card h3{font-size:17px;margin-bottom:12px}
+
 input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;font-size:16px;background:var(--card);color:var(--text)}
+
+/* 两列并排的下拉框 */
+.form-row { display: flex; gap: 10px; }
+.form-row select { flex: 1; }
 
 .custom-file-container {
   display: flex;
@@ -65,41 +87,29 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   padding: 8px 12px;
   border-radius: 12px;
 }
-.custom-file-btn {
-  background: #eef2ff;
-  color: #4E6EF2;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.custom-file-text {
-  font-size: 14px;
-  color: var(--gray);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.custom-file-btn { background: #eef2ff; color: #4E6EF2; padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.custom-file-text { font-size: 14px; color: var(--gray); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .add-btn{background:#4E6EF2;color:#fff;width:100%;padding:14px;border:none;border-radius:14px;font-size:16px}
 .tab{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .tab button{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
 .tab button.active{background:#4E6EF2;color:#fff;border-color:#4E6EF2}
+
 .item{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:10px}
 .item img{width:70px;height:70px;object-fit:cover;border-radius:10px;margin-right:12px}
 .item-info{flex:1}
 .item-name{font-weight:bold;font-size:16px;margin-bottom:4px}
 .item-desc{font-size:13px;color:var(--gray)}
-.item-tag{font-size:12px;background:#f0f0f0;color:#555;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.item-tags{margin-top:4px; display:flex; gap:6px; flex-wrap:wrap;}
+.item-tag{font-size:12px;background:#f0f0f0;color:#555;padding:2px 6px;border-radius:4px;}
+.tag-loc{background:#e3f2fd; color:#1976d2;} /* 位置标签专属颜色 */
+
 .btns{display:flex;gap:8px;margin-top:8px}
 .btns button{flex:1;padding:6px 0;border-radius:8px;border:none;font-size:14px;cursor:pointer;}
 .btn-edit{background:#eef2ff;color:#4E6EF2}
 .btn-del{background:#ffebee;color:#f44336}
 .btn-eat{background:#e8f5e9;color:#2e7d32}
 
-/* 导入导出按钮专享样式 */
 .btn-export{background:#e8f5e9;color:#2e7d32;}
 .btn-import{background:#fff3e0;color:#ef6c00;}
 </style>
@@ -116,6 +126,15 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   </select>
 </div>
 
+<div class="location-bar">
+  <span data-i18n="currentLocLabel">📍 当前位置</span>
+  <select id="globalLoc">
+    <option value="all" id="opt-g-all">不限</option>
+    <option value="home" id="opt-g-home">家</option>
+    <option value="office" id="opt-g-office">公司</option>
+  </select>
+</div>
+
 <button class="random-btn" id="randomBtn" data-i18n="randomBtn">帮我随机选一个！</button>
 <div class="result hide" id="result"></div>
 
@@ -123,10 +142,18 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
   <h3 id="formTitle" data-i18n="formTitleAdd">添加外卖</h3>
   <input type="text" id="name" data-i18n="namePlaceholder" placeholder="店铺/菜品名称">
   <textarea id="desc" rows="2" data-i18n="descPlaceholder" placeholder="评价或备注"></textarea>
-  <select id="cate">
-    <option value="staple" id="opt-staple">主食</option>
-    <option value="drink" id="opt-drink">奶茶</option>
-  </select>
+  
+  <div class="form-row">
+    <select id="cate">
+      <option value="staple" id="opt-staple">主食</option>
+      <option value="drink" id="opt-drink">奶茶</option>
+    </select>
+    <select id="foodLoc">
+      <option value="all" id="opt-f-all">不限位置</option>
+      <option value="home" id="opt-f-home">仅在家</option>
+      <option value="office" id="opt-f-office">仅在公司</option>
+    </select>
+  </div>
   
   <div class="custom-file-container">
     <input type="file" id="img" accept="image/*" style="display: none;">
@@ -155,6 +182,7 @@ input[type="text"],textarea,select{width:100%;padding:12px;border:1px solid var(
 </div>
 
 <script>
+// i18n 字典新增了位置相关的翻译
 const i18n = {
   'zh-CN': {
     title: "🍔 决定器", randomBtn: "帮我随机选一个！", formTitleAdd: "添加外卖", formTitleEdit: "编辑外卖 (保留原图则不选)",
@@ -162,7 +190,8 @@ const i18n = {
     saveBtn: "保存", tabAll: "全部", btnEdit: "编辑", btnDel: "删除", btnEat: "今天吃过",
     chooseFileBtn: "选择图片", noFileText: "未选择文件",
     confirmDel: "确定删除？", alertName: "请填写名称", alertImg: "请上传图片", alertEaten: "今天没东西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
-    dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。"
+    dataBackupTitle: "数据备份与恢复", exportBtn: "导出数据", importBtn: "导入数据", importSuccess: "导入成功！", importFail: "导入失败，请检查文件格式。",
+    currentLocLabel: "📍 当前位置", locAll: "不限", locHome: "家", locOffice: "公司", locAllForm: "不限位置", locHomeForm: "仅在家", locOfficeForm: "仅在公司"
   },
   'zh-TW': {
     title: "🍔 決定器", randomBtn: "幫我隨機選一個！", formTitleAdd: "添加外送", formTitleEdit: "編輯外送 (保留原圖則不選)",
@@ -170,7 +199,8 @@ const i18n = {
     saveBtn: "保存", tabAll: "全部", btnEdit: "編輯", btnDel: "刪除", btnEat: "今天吃過",
     chooseFileBtn: "選擇圖片", noFileText: "未選擇文件",
     confirmDel: "確定刪除？", alertName: "請填寫名稱", alertImg: "請上傳圖片", alertEaten: "今天沒東西可吃啦！", eatResultPrefix: "✅ 今天就吃：",
-    dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。"
+    dataBackupTitle: "數據備份與恢復", exportBtn: "導出數據", importBtn: "導入數據", importSuccess: "導入成功！", importFail: "導入失敗，請檢查文件格式。",
+    currentLocLabel: "📍 當前位置", locAll: "不限", locHome: "家", locOffice: "公司", locAllForm: "不限位置", locHomeForm: "僅在家", locOfficeForm: "僅在公司"
   },
   'en': {
     title: "🍔 Food Picker", randomBtn: "Pick for me!", formTitleAdd: "Add Food", formTitleEdit: "Edit (Leave img blank to keep)",
@@ -178,7 +208,8 @@ const i18n = {
     saveBtn: "Save", tabAll: "All", btnEdit: "Edit", btnDel: "Delete", btnEat: "Ate Today",
     chooseFileBtn: "Choose Image", noFileText: "No file chosen",
     confirmDel: "Are you sure to delete?", alertName: "Please enter a name", alertImg: "Please upload an image", alertEaten: "Nothing left to eat today!", eatResultPrefix: "✅ Today's Pick: ",
-    dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed. Please check the file."
+    dataBackupTitle: "Data Backup", exportBtn: "Export", importBtn: "Import", importSuccess: "Import successful!", importFail: "Import failed. Please check the file.",
+    currentLocLabel: "📍 Location", locAll: "Anywhere", locHome: "Home", locOffice: "Office", locAllForm: "Anywhere", locHomeForm: "Home Only", locOfficeForm: "Office Only"
   },
   'ja': {
     title: "🍔 ご飯ルーレット", randomBtn: "ランダムに選ぶ！", formTitleAdd: "追加する", formTitleEdit: "編集 (画像未選択で維持)",
@@ -186,7 +217,8 @@ const i18n = {
     saveBtn: "保存", tabAll: "すべて", btnEdit: "編集", btnDel: "削除", btnEat: "今日食べた",
     chooseFileBtn: "画像を選択", noFileText: "選択されていません",
     confirmDel: "本当に削除しますか？", alertName: "名前を入力してください", alertImg: "画像をアップロードしてください", alertEaten: "今日はもう食べるものがありません！", eatResultPrefix: "✅ 今日のご飯：",
-    dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。ファイルを確認してください。"
+    dataBackupTitle: "データバックアップ", exportBtn: "エクスポート", importBtn: "インポート", importSuccess: "インポート成功！", importFail: "インポート失敗。ファイルを確認してください。",
+    currentLocLabel: "📍 現在地", locAll: "すべて", locHome: "家", locOffice: "会社", locAllForm: "場所を問わない", locHomeForm: "家のみ", locOfficeForm: "会社のみ"
   }
 }
 
@@ -199,14 +231,27 @@ let eatenToday = JSON.parse(localStorage.getItem('eatenToday')) || []
 let currentCate = 'all'
 let editId = -1 
 let currentLang = localStorage.getItem('app_lang') || 'zh-CN'
+let currentGlobalLoc = localStorage.getItem('app_global_loc') || 'all' // 记录当前的全局位置
 
+// 数据兼容处理：旧数据没有位置属性，默认设为 'all'
 foods.forEach(f => {
   if (f.cate === '主食') f.cate = 'staple'
   if (f.cate === '奶茶') f.cate = 'drink'
+  if (!f.location) f.location = 'all'
 })
 save()
 checkNewDay()
 initLanguage()
+
+// 恢复上次选择的全局位置
+document.getElementById('globalLoc').value = currentGlobalLoc;
+
+// 监听全局位置切换
+document.getElementById('globalLoc').addEventListener('change', function(e) {
+  currentGlobalLoc = e.target.value;
+  localStorage.setItem('app_global_loc', currentGlobalLoc);
+  render(); // 切换位置后重新渲染列表
+});
 
 function t(key) { return i18n[currentLang][key] || key }
 
@@ -235,6 +280,14 @@ function updateLanguageUI() {
   document.getElementById('tab-staple').innerText = t('cateStaple')
   document.getElementById('tab-drink').innerText = t('cateDrink')
   
+  // 更新位置选项的翻译
+  document.getElementById('opt-g-all').innerText = t('locAll')
+  document.getElementById('opt-g-home').innerText = t('locHome')
+  document.getElementById('opt-g-office').innerText = t('locOffice')
+  document.getElementById('opt-f-all').innerText = t('locAllForm')
+  document.getElementById('opt-f-home').innerText = t('locHomeForm')
+  document.getElementById('opt-f-office').innerText = t('locOfficeForm')
+  
   if (editId !== -1) {
     document.getElementById('formTitle').innerText = t('formTitleEdit')
   }
@@ -259,6 +312,7 @@ function save(){
 function clearForm() {
   document.getElementById('name').value = ''
   document.getElementById('desc').value = ''
+  document.getElementById('foodLoc').value = 'all' // 重置位置为不限
   fileInput.value = '' 
   customFileText.innerText = t('noFileText')
   customFileText.setAttribute('data-i18n', 'noFileText')
@@ -277,18 +331,33 @@ fileInput.addEventListener('change', function() {
 });
 
 function render(){
-  const filtered = foods.filter(f => !eatenToday.includes(f.id))
-  const show = currentCate === 'all' ? filtered : filtered.filter(f => f.cate === currentCate)
+  // 1. 过滤今天没吃过的
+  const uneaten = foods.filter(f => !eatenToday.includes(f.id));
+  
+  // 2. 根据全局位置过滤（只显示匹配当前位置，或者被标记为"不限位置"的食物）
+  const locFiltered = currentGlobalLoc === 'all' 
+    ? uneaten 
+    : uneaten.filter(f => f.location === currentGlobalLoc || f.location === 'all');
+    
+  // 3. 根据分类过滤（Tab）
+  const show = currentCate === 'all' 
+    ? locFiltered 
+    : locFiltered.filter(f => f.cate === currentCate);
 
   list.innerHTML = show.map(f => {
     const displayCate = f.cate === 'staple' ? t('cateStaple') : (f.cate === 'drink' ? t('cateDrink') : f.cate);
+    const displayLoc = f.location === 'home' ? t('locHomeForm') : (f.location === 'office' ? t('locOfficeForm') : t('locAllForm'));
+    
     return `
     <div class="item">
       <img src="${f.img}">
       <div class="item-info">
         <div class="item-name">${f.name}</div>
         <div class="item-desc">${f.desc}</div>
-        <div class="item-tag">${displayCate}</div>
+        <div class="item-tags">
+          <span class="item-tag">${displayCate}</span>
+          <span class="item-tag tag-loc">📍 ${displayLoc}</span>
+        </div>
         <div class="btns">
           <button class="btn-edit" onclick="edit(${f.id})">${t('btnEdit')}</button>
           <button class="btn-del" onclick="del(${f.id})">${t('btnDel')}</button>
@@ -317,6 +386,7 @@ function edit(id){
   document.getElementById('name').value = f.name
   document.getElementById('desc').value = f.desc
   document.getElementById('cate').value = f.cate
+  document.getElementById('foodLoc').value = f.location || 'all' // 读取位置信息
   document.getElementById('formTitle').innerText = t('formTitleEdit')
   editId = id 
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -361,6 +431,7 @@ document.getElementById('save').onclick = ()=>{
   const name = document.getElementById('name').value.trim()
   const desc = document.getElementById('desc').value.trim()
   const cate = document.getElementById('cate').value
+  const foodLoc = document.getElementById('foodLoc').value // 获取保存的位置信息
   const file = fileInput.files[0]
   
   if(!name) return alert(t('alertName'))
@@ -368,7 +439,7 @@ document.getElementById('save').onclick = ()=>{
   if(editId !== -1){ 
     const f = foods.find(x => x.id === editId)
     if(f) {
-      f.name = name; f.desc = desc; f.cate = cate;
+      f.name = name; f.desc = desc; f.cate = cate; f.location = foodLoc;
       if(file){
         compressImage(file, (compressedImg) => {
           f.img = compressedImg; 
@@ -381,14 +452,20 @@ document.getElementById('save').onclick = ()=>{
   } else { 
     if(!file) return alert(t('alertImg'))
     compressImage(file, (compressedImg) => {
-      foods.push({ id: Date.now(), name, desc, cate, img: compressedImg })
+      foods.push({ id: Date.now(), name, desc, cate, location: foodLoc, img: compressedImg })
       save(); render(); clearForm();
     });
   }
 }
 
 document.getElementById('randomBtn').onclick = ()=>{
-  const pool = foods.filter(f => !eatenToday.includes(f.id))
+  // 随机池逻辑：今天没吃过的 + 匹配当前全局位置（或者不限位置的）
+  const pool = foods.filter(f => {
+    const notEaten = !eatenToday.includes(f.id);
+    const matchLoc = currentGlobalLoc === 'all' || f.location === currentGlobalLoc || f.location === 'all';
+    return notEaten && matchLoc;
+  });
+  
   if(pool.length === 0) {
     result.classList.add('hide')
     return alert(t('alertEaten'))
@@ -409,20 +486,17 @@ document.querySelectorAll('.tab button').forEach(b=>{
   }
 })
 
-// === 新增：导入导出功能逻辑 ===
+// === 导入导出逻辑保持不变 ===
 document.getElementById('exportBtn').onclick = () => {
-  // 把数据打包
   const exportData = {
     foods: foods,
     eatenToday: eatenToday,
     lastDate: localStorage.getItem('lastDate')
   };
-  // 转换成 JSON 字符串，生成 Blob 虚拟文件
   const dataStr = JSON.stringify(exportData);
   const blob = new Blob([dataStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   
-  // 创建一个隐藏的 a 标签触发下载
   const a = document.createElement('a');
   a.href = url;
   a.download = "food_picker_backup.json";
@@ -434,7 +508,7 @@ document.getElementById('exportBtn').onclick = () => {
 
 const importInput = document.getElementById('importInput');
 document.getElementById('importBtn').onclick = () => {
-  importInput.click(); // 点击按钮时，触发隐藏的文件选择器
+  importInput.click(); 
 };
 
 importInput.addEventListener('change', function(e) {
@@ -447,6 +521,9 @@ importInput.addEventListener('change', function(e) {
       const importedData = JSON.parse(event.target.result);
       if (importedData && importedData.foods && Array.isArray(importedData.foods)) {
         foods = importedData.foods;
+        // 如果导入的数据没有位置属性，给一个默认值防止报错
+        foods.forEach(f => { if (!f.location) f.location = 'all'; });
+        
         eatenToday = importedData.eatenToday || [];
         if(importedData.lastDate) {
           localStorage.setItem('lastDate', importedData.lastDate);
@@ -460,12 +537,10 @@ importInput.addEventListener('change', function(e) {
     } catch (err) {
       alert(t('importFail'));
     }
-    // 清空 input，以便可以重复选择同一个文件导入
     importInput.value = '';
   };
-  reader.readAsText(file); // 以文本格式读取 json
+  reader.readAsText(file);
 });
-// =================================
 </script>
 </body>
 </html>
